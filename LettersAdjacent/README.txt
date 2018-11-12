@@ -1,0 +1,1 @@
+A small program designed to count all combinations of two letters next to each other.
