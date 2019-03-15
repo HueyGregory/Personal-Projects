@@ -14,8 +14,11 @@ import javax.swing.JFrame;
 import main.entities.DynamicEntity;
 import main.entities.ObjectList;
 import main.entities.dynamic.vehicles.Player;
-import main.entities.sprites.SpriteEntity;
 import main.input.Keyboard;
+import main.render.Level;
+import main.render.PixelLevelDefinition;
+import main.render.Screen;
+import main.render.sprites.SpriteEntity;
 
 public class GameLoop extends Canvas implements Runnable {
 	private JFrame frame;
@@ -26,9 +29,10 @@ public class GameLoop extends Canvas implements Runnable {
 	private Player player;
 	private int width = 300, height = width * 9/16, scale = 3;		// pixel-precision
 	
-	public static int[][] map;		// holds the entire map/level's tiles - tile-precision
+	public static PixelLevelDefinition[][] map;		// holds the entire map/level's tiles - tile-precision
 	
 	private String frameTitle = "Player";
+	private static Level currentLevel;
 	
 	private BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 	private int[] imagePixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
@@ -36,8 +40,8 @@ public class GameLoop extends Canvas implements Runnable {
 	public GameLoop () {
 		Dimension size = new Dimension(width*scale, height*scale);
 		setPreferredSize(size);	
-		Level level = Level.level1;
-		map = level.initializeMap(map);
+		setCurrentLevel(Level.level1);
+		map = currentLevel.initializeMap(map);
 		screen = new Screen(width, height);		// pixel-precision
 		keyboard = new Keyboard();
 		addKeyListener(keyboard);
@@ -80,34 +84,11 @@ public class GameLoop extends Canvas implements Runnable {
 		}
 		Graphics2D g = (Graphics2D) bufferStrategy.getDrawGraphics();
 		g.setColor(Color.WHITE);
-	//	g.fillRect(0, 0, screen.getWidthPixel() * scale, screen.getHeightPixel() * scale);
-	//	g.drawImage(image, 0, 0, screen.getWidthPixel() * scale, screen.getHeightPixel() * scale, null);
 		
 		g.fillRect(0, 0, width*scale, height*scale);
 		g.drawImage(image, 0, 0, width*scale, height*scale, null);
-		//screen.clear();
-		renderRotatingEntites(g);
 		g.dispose();
 		bufferStrategy.show();
-	}
-
-	private void renderRotatingEntites(Graphics2D g) {		
-		player.render(player.getX(), player.getY(), screen);
-		int heightSprite = player.getSprite().getHeight();
-		int widthSprite = player.getSprite().getWidth();
-		BufferedImage image = new BufferedImage(widthSprite, heightSprite, BufferedImage.TYPE_INT_RGB);
-		int[] imagePixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
-		for(int x = 0; x < widthSprite; x++) {
-			for (int y = 0; y < heightSprite; y++) {
-				imagePixels[x + y * widthSprite] = player.getPixels()[x][y];	// Pixel-precision
-			}
-		}
-		AffineTransform old = g.getTransform();
-		g.translate(player.getX() + getWidth()/2, player.getY() + getHeight()/2);
-		g.rotate(Math.toRadians(player.getAngle()));
-		g.drawImage(image, 0, 0, widthSprite*scale, heightSprite*scale, null);
-		g.setTransform(old);
-		
 	}
 
 	@Override
@@ -162,6 +143,14 @@ public class GameLoop extends Canvas implements Runnable {
 		game.setFocusable(true);
 		game.buildJFrame(game);
 		game.start();
+	}
+
+	public static Level getCurrentLevel() {
+		return GameLoop.currentLevel;
+	}
+
+	public static void setCurrentLevel(Level currentLevel) {
+		GameLoop.currentLevel = currentLevel;
 	}
 
 }

@@ -1,6 +1,6 @@
 package main.entities;
 
-import main.Screen;
+import main.render.Screen;
 
 public abstract class DynamicEntity extends Entity {
 

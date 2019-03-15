@@ -1,12 +1,12 @@
 package main.entities;
 
-import main.Screen;
-import main.entities.sprites.Sprite;
+import main.render.Screen;
+import main.render.sprites.Sprite;
 
 public class Entity {
 	
 	//protected int[][] pixels;
-	protected int x, y;		// pixel-precision 
+	protected double x, y;		// pixel-precision 
 	protected int width, height;
 	protected Sprite sprite;
 	protected int index;
@@ -21,12 +21,10 @@ public class Entity {
 	}
 	
 	protected boolean withinBounds(Screen screen) {
-		System.out.printf("[Entity - withinBounds()] entered method; this.x == %d; screen.getXPixel() == %d; screen.getWidthPixel() == %d\n", this.x, screen.getXPixel(), screen.getWidthPixel());
 		if ((this.x >= screen.getXPixel()) && (this.x <= screen.getXPixel() + screen.getWidthPixel()) && (this.y >= screen.getYPixel()) && (this.y <= screen.getYPixel() + screen.getHeightPixel())) {
 			return true;
 		}
 		else {
-			System.out.printf("[Entity - withinBounds() - else{}] this.x == %d; screen.getXPixel() == %d; screen.getWidthPixel() == %d\n", this.x, screen.getXPixel(), screen.getWidthPixel());
 			return false;
 		}
 	}
@@ -39,10 +37,10 @@ public class Entity {
 	}
 	
 	public int getX() {
-		return x;
+		return (int) Math.round(x);
 	}
 	public int getY() {
-		return y;
+		return (int) Math.round(y);
 	}
 	
 }

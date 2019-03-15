@@ -1,17 +1,39 @@
 package main.entities;
 
 import java.util.ArrayList;
+import java.util.Random;
 
-import main.Screen;
-import main.entities.sprites.SpriteTile;
+import main.algorithms.Direction;
+import main.render.Screen;
+import main.render.sprites.SpriteTile;
 
 public class Tile extends Entity {
 	
-	public static Tile tileRoadWithSideWalkDown = new Tile(SpriteTile.roadWithSidewalk, 0);
-	public static Tile tileRoadWithSideWalkUp = new Tile(SpriteTile.roadWithSidewalk, 1);
+	public static final Tile RoadLeftRight = new Tile(SpriteTile.roadleftRight, 0);
+	public static final Tile RoadUpDown = new Tile(SpriteTile.roadUpDown, 0);
+	public static final Tile RoadDownRight = new Tile(SpriteTile.roadDownRight, 0);
+	public static final Tile RoadUpRight = new Tile(SpriteTile.roadDownRight, 1);
+	public static final Tile RoadDownLeft = new Tile(SpriteTile.roadDownLeft, 0);
+	public static final Tile RoadUpLeft = new Tile(SpriteTile.roadDownLeft, 1);
+	
+	public static final Tile RoadUp = new Tile(SpriteTile.roadUp, 0);
+	public static final Tile RoadDown = new Tile(SpriteTile.roadUp, 1);
+	public static final Tile RoadRight = new Tile(SpriteTile.roadRight, 0);
+	public static final Tile RoadLeft = new Tile(SpriteTile.roadLeft, 0);
+	
+	public static final Tile RoadUpDownRight = new Tile(SpriteTile.roadUpDownRight, 0);
+	public static final Tile RoadUpDownLeft = new Tile(SpriteTile.roadUpDownLeft, 0);
+	public static final Tile RoadDownLeftRight = new Tile(SpriteTile.roadDownLeftRight, 0);
+	public static final Tile RoadUpLeftRight = new Tile(SpriteTile.roadDownLeftRight, 1);
+	
+	
+/*	public static Tile tileRoadWithSideWalkUp = new Tile(SpriteTile.roadWithSidewalk, 1);
 	public static Tile tileRoadLane = new Tile(SpriteTile.roadLane, 0);
-	public static Tile outsideVoidTile = new Tile(new SpriteTile(Screen.TILESIZE, Screen.TILESIZE, 0xffffffff), 0);
-	public static Tile insideVoidTile = new Tile(new SpriteTile(Screen.TILESIZE, Screen.TILESIZE, 0xFFFFC0CB), 0);
+*/	public static final Tile outsideVoidTile = new Tile(new SpriteTile(Screen.TILESIZE, Screen.TILESIZE, 0xffffffff), 0);
+	public static final Tile insideVoidTile = new Tile(new SpriteTile(Screen.TILESIZE, Screen.TILESIZE, 0xFFFFC0CB), 0);
+	public static final Tile BuildingFront = new Tile(Building.Buildings[0], 0);
+	public static final Tile BuildingBack = new Tile(Building.Buildings[1], 0);
+
 	
 	private ArrayList<Direction> directions = new ArrayList<Direction>(2);	// used by road; -1 for no direction/not a road
 	private boolean solid;
@@ -51,9 +73,9 @@ public class Tile extends Entity {
 		this.y = y;	// pixel-precision with yOffset included
 		if (withinBounds(screen)) {
 			int xx = Math.abs(x%Screen.TILESIZE);
-			for (int i = this.x - screen.getXPixel(); (i < this.sprite.getWidth() + this.x - screen.getXPixel()) && (i < screen.getPixels().length) && xx < Screen.TILESIZE; i++) {
+			for (int i = (int) Math.round(this.x - screen.getXPixel()); (i < this.sprite.getWidth() + this.x - screen.getXPixel()) && (i < screen.getPixels().length) && xx < Screen.TILESIZE; i++) {
 				int yy = Math.abs(y%Screen.TILESIZE);
-				for (int j = this.y - screen.getYPixel(); (j < this.sprite.getHeight() + this.y - screen.getYPixel()) && (j < screen.getPixels()[i].length) && yy < Screen.TILESIZE; j++) {
+				for (int j = (int) Math.round(this.y - screen.getYPixel()); (j < this.sprite.getHeight() + this.y - screen.getYPixel()) && (j < screen.getPixels()[i].length) && yy < Screen.TILESIZE; j++) {
 					try { 
 						screen.getPixels()[i][j] = pixels[xx][yy++];	// pixel-accuracy
 					} catch (ArrayIndexOutOfBoundsException e) {
@@ -69,16 +91,8 @@ public class Tile extends Entity {
 		return this.solid;
 	}
 
-	public int getX() {
-		return x;
-	}
-
 	public void setX(int x) {
 		this.x = x;
-	}
-
-	public int getY() {
-		return y;
 	}
 
 	public void setY(int y) {

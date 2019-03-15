@@ -1,15 +1,15 @@
 package main.entities.dynamic.vehicles;
 
-import main.Screen;
 import main.entities.dynamic.VelocityVector;
-import main.entities.sprites.Sprite;
-import main.entities.sprites.SpriteEntity;
 import main.input.Keyboard;
+import main.render.Screen;
+import main.render.sprites.Sprite;
+import main.render.sprites.SpriteEntity;
 
 public class Player extends Vehicles {
 	
 	private static final int TRANSPARANTCOLOR = 0x00ffdc90;
-	private double x, y;
+	//private double x, y;
 	private Keyboard keyboard;
 	private Screen screen;
 	private VelocityVector velocityVector;
@@ -25,7 +25,7 @@ public class Player extends Vehicles {
 		this.x = x*Screen.TILESIZE;		// pixel-precision
 		this.y = y*Screen.TILESIZE;		// pixel-precision
 		this.sprite = sprite;
-		pixels = new int[sprite.getWidth()][sprite.getHeight()];
+		pixels = new int[sprite.getBiggerSize()][sprite.getBiggerSize()];
 		this.keyboard = keyboard;
 		this.screen = screen;
 	}
@@ -34,11 +34,11 @@ public class Player extends Vehicles {
 	public void tick() {
 	//	velocityVector.setR(0);
 		if (keyboard.getUp()) {
-			if (velocityVector.getR() >= 5) velocityVector.setR(5);
+			if (velocityVector.getR() >= 2) velocityVector.setR(2);
 			else velocityVector.setR(velocityVector.getR() + 0.1);
 		}
 		if (keyboard.getDown()) {
-			if (velocityVector.getR() <= -5) velocityVector.setR(-5);
+			if (velocityVector.getR() <= 0.1) velocityVector.setR(0);
 			else velocityVector.setR(velocityVector.getR() - 0.1);
 		}
 		if (keyboard.getRight()) velocityVector.setAngle(velocityVector.getAngle() + 1);
@@ -57,31 +57,20 @@ public class Player extends Vehicles {
 	
 	public void render(int x, int y, Screen screen) {
 		// might need to change method so as to accomodate increased pixel array size, which will then contain the pixels for the rotation, so no 
-		
-	//	int[][] pixels = setXandY(sprite.getPixels());
-		if (withinBounds(screen)) {
-		//	System.out.println("[Player - render()] entered render(): " + increment++);
-		//	int xx = 0;
-		//	for (double i = this.x - screen.getXPixel(); (i < this.sprite.getWidth() + this.x - screen.getXPixel()); i++) {
-				for (int i = 0; i < this.sprite.getWidth(); i++) {
-		//		int yy = 0;
-			//	for (double j = this.y - screen.getYPixel(); (j < this.sprite.getHeight() + this.y - screen.getYPixel()); j++) {
-					for (int j = 0; j < this.sprite.getHeight(); j++) {
-					try { 
-				//		int spriteColor = pixels[xx][yy++];;
-						int spriteColor = sprite.getPixels()[i][j];
-						if (!(spriteColor == -1)) {	// -1 means to ignore that pixel in the sprite
-							pixels[i][j] = spriteColor;	// pixel-accuracy
-						}
-						else {	
-							pixels[i][j] = screen.getPixels()[i+screen.getWidthPixel()/2][j+screen.getHeightPixel()/2];
-						}
-					} catch (ArrayIndexOutOfBoundsException e) {
-						e.printStackTrace();
-						break;
+		for (int i = 0; i < this.sprite.getWidth(); i++) {
+			for (int j = 0; j < this.sprite.getHeight(); j++) {
+				try { 
+					int spriteColor = sprite.getPixels()[i][j];
+					if (!(spriteColor == -1)) {	// -1 means to ignore that pixel in the sprite
+						System.out.println(velocityVector.getR());
+						int newX = (int) (Math.cos(velocityVector.getRadian())*i - Math.sin(velocityVector.getRadian())*j);
+						int newY = (int) (Math.sin(velocityVector.getRadian())*i + Math.cos(velocityVector.getRadian())*j);
+						screen.getPixels()[(screen.getWidthPixel()/2+newX)][(screen.getHeightPixel()/2+newY)] = spriteColor;
 					}
+				} catch (ArrayIndexOutOfBoundsException e) {
+					e.printStackTrace();
+					break;
 				}
-			//	xx++;
 			}
 		}
 	}
@@ -95,11 +84,10 @@ public class Player extends Vehicles {
 		 */
 		
 		
-		// makes the player's sprite tilted
+		// makes the player's sprite tiled
 		int[][] newPixels = new int[sprite.getWidth()][sprite.getHeight()];
 		for(int i = 0; i < spritePixels.length; i++) {
 			for (int j = 0; j < spritePixels[i].length; j++) {
-				System.out.printf("[Player - setXandY()] i == %d, j == %d; velocityVector.getXV() == %f, velocityVector.getYV() == %f; i/velocityVector.getXV() == %f, j/velocityVector.getYV() == %f\n", i, j, velocityVector.getXV(), velocityVector.getYV(), i/velocityVector.getXV(), j/velocityVector.getYV());
 				newPixels[(int) ((i/(velocityVector.getXV() + 1)))][(int) ((j/(velocityVector.getYV() + 1)))] = spritePixels[i][j];
 			}
 		}

@@ -41,7 +41,7 @@ public class VelocityVector {
 	}
 	public void setR(double r) {
 		this.r = r;
-		calculateCartesian();
+		if (r != 0) calculateCartesian();
 	}
 
 	public double getAngle() {
@@ -51,6 +51,10 @@ public class VelocityVector {
 	public void setAngle(double angle) {
 		this.angle = angle;
 		calculateCartesian();
+	}
+	
+	public double getRadian() {
+		return Math.atan2(yv, xv);
 	}
 	
 	private void calculateCartesian() {
@@ -63,5 +67,6 @@ public class VelocityVector {
 		double radian = Math.atan2(yv, xv);
 		angle = Math.toDegrees(radian);
 	}
+	
 	
 }

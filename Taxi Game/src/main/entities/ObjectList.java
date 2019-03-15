@@ -4,8 +4,8 @@ import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.LinkedList;
 
-import main.Screen;
 import main.entities.dynamic.vehicles.Player;
+import main.render.Screen;
 
 public class ObjectList <E extends Entity> {
 	
@@ -41,10 +41,14 @@ public class ObjectList <E extends Entity> {
 				 if (withinBounds(currEntity.getX(), currEntity.getY(), screen)) {
 					 currEntity.render(currEntity.getX(), currEntity.getY(), screen);
 				 }
+				 else {
+					System.out.printf("[ObjectList - render()] currEntity is NOT within bounds; currEntity.getX(): %d; currEntity.getY(): %d \n", currEntity.getX(), currEntity.getY());
+				}
 			 }
 		}
 	}
-	
+
+
 	private boolean withinBounds(int x, int y, Screen screen) {
 		if ((x >= screen.getXPixel()) && (x <= screen.getXPixel() + screen.getWidthPixel()) && (y >= screen.getYPixel()) && (y <= screen.getYPixel() + screen.getHeightPixel())) {
 			return true;

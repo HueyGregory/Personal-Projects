@@ -1,7 +1,7 @@
 package main.entities.dynamic.vehicles;
 
-import main.Screen;
 import main.entities.DynamicEntity;
+import main.render.Screen;
 
 public abstract class Vehicles extends DynamicEntity {
 

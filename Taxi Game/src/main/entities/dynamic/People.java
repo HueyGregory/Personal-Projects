@@ -1,7 +1,7 @@
 package main.entities.dynamic;
 
-import main.Screen;
 import main.entities.DynamicEntity;
+import main.render.Screen;
 
 public class People extends DynamicEntity {
 
